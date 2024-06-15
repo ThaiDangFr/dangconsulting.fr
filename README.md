@@ -46,24 +46,6 @@ $ docker compose up --build
 
 - pour exclure des fichiers du rebuild automatique, voir dans \_config.yml dans la section "exclude:"
 
-analyse de l'existant
-=====================
-- about             => _pages/about.md et utilise le _layouts/about.liquid
-- blog              => _pages/blog.md et _posts/*.md
-- publications      => supprimer publications.md
-- projects          => transformer en "Stocks"
-- repositories      => supprimer repositories.md
-- cv                => supprimer cv.md
-- teaching          => supprimer teaching.md
-- people            => supprimer profiles.md et about_einstein.md
-- submenus          => supprimer dropdown.md
-
-cible
-=====
-- stocks
-  - tableau avec "ticker" et "nom"
-    - "ticker" renvoie sur une page avec "description" et "sector"
-- blog
 
 giscus
 ======
@@ -72,8 +54,8 @@ giscus
 - aller sur https://giscus.app/fr pour récuppérer repo_id et category_id
 - personnaliser la section giscus dans \_config.yml et changer category à Announcements
 
-stock list
-==========
+training
+========
 - https://cloudcannon.com/cheat-sheets/jekyll/
 - https://jekyllrb.com/docs/collections/
 
