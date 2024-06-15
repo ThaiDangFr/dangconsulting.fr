@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://dangconsulting.fr/al-folio/sitemap.xml
+Sitemap: https://dangconsulting.fr/sitemap.xml
