@@ -13,7 +13,7 @@ footer_text: >
 
 keywords: cloud, devops, technology, aws, kubernetes, vault
 lang: fr # the language of your site (for example: en, fr, cn, ru, etc.)
-icon: 🌐 # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
+icon: 📑 # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
 url: https://dangconsulting.fr # the base hostname & protocol for your site
 baseurl:
@@ -74,7 +74,7 @@ dblp_url: # your DBLP profile url
 discord_id: # your discord id (18-digit unique numerical identifier)
 facebook_id: # your facebook id
 flickr_id: # your flickr id
-github_username: ThaiDangFr # your GitHub user name
+github_username: # your GitHub user name
 gitlab_username: # your GitLab user name
 ieee_id: # your ieeexplore.ieee.org/author/id
 instagram_id: # your instagram id
@@ -106,6 +106,7 @@ work_url: # work page URL
 x_username: # your X handle
 youtube_id: # your youtube channel id (youtube.com/@<youtube_id>)
 zotero_username: # your zotero username
+credly_id: thai-dang.1ac1477f
 
 contact_note: >
   Pour toute remarque ou demande, me contacter par les réseaux sociaux.
@@ -407,7 +408,7 @@ enable_bing_verification: false # enables bing site verification
 enable_masonry: true # enables automatic project cards arrangement
 enable_math: true # enables math typesetting (uses MathJax)
 enable_tooltips: false # enables automatic tooltip links generated for each section titles on pages and posts
-enable_darkmode: true # enables switching between light/dark modes
+enable_darkmode: false # enables switching between light/dark modes
 enable_navbar_social: false # enables displaying social links in the navbar on the about page
 enable_project_categories: true # enables categorization of projects into multiple categories
 enable_medium_zoom: true # enables image zoom feature (as on medium.com)
