@@ -1,12 +1,12 @@
 ---
 layout: page
-title: projects
-permalink: /projects/
-description: A growing collection of your cool projects.
+title: trainings
+permalink: /trainings/
+description: Retrouvez ici mes offres de formation en ligne
 nav: true
-nav_order: 3
-display_categories: [work, fun]
-horizontal: false
+nav_order: 2
+display_categories: [trainings]
+horizontal: true
 ---
 
 <!-- pages/projects.md -->
