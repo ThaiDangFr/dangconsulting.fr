@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="fr"><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://dangconsulting.fr/feed.xml" rel="self" type="application/atom+xml"/><link href="https://dangconsulting.fr/" rel="alternate" type="text/html" hreflang="fr"/><updated>2024-06-17T22:01:12+00:00</updated><id>https://dangconsulting.fr/feed.xml</id><title type="html">Cloud ∞ DevOps</title><subtitle>Blog sur les sujets liés à la tech </subtitle><entry><title type="html">Git tips</title><link href="https://dangconsulting.fr/blog/2024/git/" rel="alternate" type="text/html" title="Git tips"/><published>2024-06-17T12:00:00+00:00</published><updated>2024-06-17T12:00:00+00:00</updated><id>https://dangconsulting.fr/blog/2024/git</id><content type="html" xml:base="https://dangconsulting.fr/blog/2024/git/"><![CDATA[<h1 id="squash">Squash</h1> <p>Squasher ses commits git permet de factoriser ses commits avant de pusher son travail, histoire de partager un historique propre.</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># lister tous les commits</span>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="fr"><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://dangconsulting.fr/feed.xml" rel="self" type="application/atom+xml"/><link href="https://dangconsulting.fr/" rel="alternate" type="text/html" hreflang="fr"/><updated>2024-06-19T14:31:06+00:00</updated><id>https://dangconsulting.fr/feed.xml</id><title type="html">Cloud ∞ DevOps</title><subtitle>Blog sur les sujets liés à la tech </subtitle><entry><title type="html">Git tips</title><link href="https://dangconsulting.fr/blog/2024/git/" rel="alternate" type="text/html" title="Git tips"/><published>2024-06-17T12:00:00+00:00</published><updated>2024-06-17T12:00:00+00:00</updated><id>https://dangconsulting.fr/blog/2024/git</id><content type="html" xml:base="https://dangconsulting.fr/blog/2024/git/"><![CDATA[<h1 id="squash">Squash</h1> <p>Squasher ses commits git permet de factoriser ses commits avant de pusher son travail, histoire de partager un historique propre.</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># lister tous les commits</span>
 git log
 
 <span class="c"># on va afficher les 5 derniers commits, le plus récent est en bas</span>
@@ -20,7 +20,7 @@ asdf current              <span class="c"># list les versions actuelles</span>
 asdf plugin-update vault  <span class="c"># mise à jour du plugin vault</span>
 </code></pre></div></div> <h1 id="curl-et-le-tls-sous-fedora">Curl et le TLS sous Fedora</h1> <p>Afin de pouvoir faire des curl vers des machines interne dont le TLS a été signé par votre PKI, il faut déployer votre Root CA sur votre desktop afin que celui-ci puisse le truster.</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo cp</span> /mnt/secure/certificats/tls/ca.crt /etc/pki/ca-trust/source/anchors/dangconsulting-root-ca.crt
 <span class="nb">sudo </span>update-ca-trust
-</code></pre></div></div> <h1 id="pki-secret-engine">PKI Secret Engine</h1> <p>Le PKI Secret Engine de Vault permet de gérer une PKI interne en évitant d’exposer les clefs privées.</p> <p>Il permet de :</p> <ul> <li>créer ou importer un Root CA</li> <li>créer un Intermediate CA</li> <li>appeler un role sur ce Intermediate CA afin de générer un certificat serveur</li> </ul> <p>Mais avant tout, il faut disposer de certains droits afin de pouvoir gérer la pki, donc nous allons créer une policy à associer au user gestionnaire.</p> <h3 id="créer-une-policy-à-associer-au-user-gestionnaire">Créer une policy à associer au user gestionnaire</h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vault policy write pki - <span class="o">&lt;&lt;</span><span class="no">EOF</span><span class="sh">
+</code></pre></div></div> <h1 id="pki-secret-engine">PKI Secret Engine</h1> <p>Le PKI Secret Engine de Vault permet de gérer une PKI interne.</p> <p>Il permet de :</p> <ul> <li>créer ou importer un Root CA</li> <li>créer un Intermediate CA</li> <li>appeler un role sur ce Intermediate CA afin de générer un certificat serveur</li> </ul> <p>Mais avant tout, il faut disposer de certains droits afin de pouvoir gérer la pki, donc nous allons créer une policy à associer au user gestionnaire.</p> <h3 id="créer-une-policy-à-associer-au-user-gestionnaire">Créer une policy à associer au user gestionnaire</h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vault policy write pki - <span class="o">&lt;&lt;</span><span class="no">EOF</span><span class="sh">
 # Enable secrets engine
 path "sys/mounts/*" {
   capabilities = [ "create", "read", "update", "delete", "list" ]
@@ -40,12 +40,15 @@ path "pki*" {
 </span>vault policy <span class="nb">read </span>pki
 </code></pre></div></div> <h3 id="import-dun-root-ca-déjà-existante">Import d’un Root CA déjà existante</h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vault secrets <span class="nb">enable</span> <span class="nt">-path</span><span class="o">=</span>pki_root pki
 vault secrets tune <span class="nt">-max-lease-ttl</span><span class="o">=</span>87600h pki_root
+vault write pki_root/config/urls <span class="nv">issuing_certificates</span><span class="o">=</span><span class="s2">"https://vault.home/v1/pki_root/ca"</span> <span class="nv">crl_distribution_points</span><span class="o">=</span><span class="s2">"https://vault.home/v1/pki_root/crl"</span>
+vault write pki_root/config/crl <span class="nv">auto_rebuild</span><span class="o">=</span><span class="nb">true
 
-vault write <span class="nt">-format</span><span class="o">=</span>json pki_root/config/ca <span class="nv">pem_bundle</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span><span class="nb">cat</span> /mnt/secure/certificats/tls/ca.crt /mnt/secure/certificats/tls/ca.key<span class="si">)</span><span class="s2">"</span>
+</span>vault write <span class="nt">-format</span><span class="o">=</span>json pki_root/config/ca <span class="nv">pem_bundle</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span><span class="nb">cat</span> /mnt/secure/certificats/tls/ca.crt /mnt/secure/certificats/tls/ca.key<span class="si">)</span><span class="s2">"</span>
 vault list pki_root/issuers/
-vault write pki_root/config/urls <span class="nv">issuing_certificates</span><span class="o">=</span><span class="s2">"https://vault.home/v1/pki/ca"</span> <span class="nv">crl_distribution_points</span><span class="o">=</span><span class="s2">"https://vault.home/v1/pki/crl"</span>
 </code></pre></div></div> <h3 id="création-dun-intermediate-ca">Création d’un Intermediate CA</h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vault secrets <span class="nb">enable</span> <span class="nt">-path</span><span class="o">=</span>pki_intermediate pki
 vault secrets tune <span class="nt">-max-lease-ttl</span><span class="o">=</span>43800h pki_intermediate
+vault write pki_intermediate/config/urls <span class="nv">issuing_certificates</span><span class="o">=</span><span class="s2">"https://vault.home/v1/pki_intermediate/ca"</span> <span class="nv">crl_distribution_points</span><span class="o">=</span><span class="s2">"https://vault.home/v1/pki_intermediate/crl"</span>
+vault write pki_intermediate/config/crl <span class="nv">auto_rebuild</span><span class="o">=</span><span class="nb">true</span>
 
 <span class="c"># create csr</span>
 vault write <span class="nt">-format</span><span class="o">=</span>json pki_intermediate/intermediate/generate/internal <span class="se">\</span>
@@ -61,11 +64,14 @@ vault write <span class="nt">-format</span><span class="o">=</span>json pki_root
 <span class="c"># import the intermediate certificate</span>
 vault write pki_intermediate/intermediate/set-signed <span class="nv">certificate</span><span class="o">=</span>@intermediate.cert.pem
 <span class="nb">rm</span> <span class="nt">-f</span> pki_intermediate.csr intermediate.cert.pem 
+
+vault list pki_intermediate/issuers/
 </code></pre></div></div> <h3 id="création-dun-role-et-génération-de-certificat-serveur">Création d’un role et génération de certificat serveur</h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># create role</span>
 vault write pki_intermediate/roles/home <span class="nv">allowed_domains</span><span class="o">=</span>home <span class="nv">allow_subdomains</span><span class="o">=</span><span class="nb">true </span><span class="nv">max_ttl</span><span class="o">=</span>720h
 
 <span class="c"># generate a server certificate by calling the role</span>
-vault write pki_intermediate/issue/home <span class="nv">common_name</span><span class="o">=</span>toto.home <span class="nv">ttl</span><span class="o">=</span><span class="s2">"24h"</span>
+<span class="c"># output will contain : ca_chain, certificate, issuing_ca, private_key, private_key_type, serial_number</span>
+vault write pki_intermediate/issue/home <span class="nv">common_name</span><span class="o">=</span>toto.home <span class="nv">ttl</span><span class="o">=</span><span class="s2">"5m"</span>   <span class="c"># available only during 5min</span>
 </code></pre></div></div> <h3 id="lister-les-certificats-créés-afficher-des-détails-ou-le-télécharger">Lister les certificats créés, afficher des détails ou le télécharger</h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># return a list of serial_number</span>
 vault list pki_intermediate/certs
 
@@ -75,9 +81,29 @@ vault <span class="nb">read </span>pki_intermediate/cert/&lt;serial_number&gt;
 <span class="c"># download a certificate</span>
 vault <span class="nb">read</span> <span class="nt">-field</span><span class="o">=</span>certificate pki_intermediate/cert/&lt;serial_number&gt; <span class="o">&gt;</span> toto.home.crt
 </code></pre></div></div> <h3 id="révoquer-un-certificat">Révoquer un certificat</h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vault write pki_intermediate/revoke <span class="nv">serial_number</span><span class="o">=</span>&lt;serial_number&gt;
-</code></pre></div></div> <h3 id="maintenance-des-issuers-et-des-certificats">Maintenance des issuers et des certificats</h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># manually delete expired certificates</span>
-vault write pki_intermediate/tidy <span class="nv">tidy_cert_store</span><span class="o">=</span><span class="nb">true </span><span class="nv">tidy_revoked_certs</span><span class="o">=</span><span class="nb">true</span>
+</code></pre></div></div> <h3 id="maintenance-des-issuers-et-des-certificats">Maintenance des issuers et des certificats</h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># manually delete expired certificates, with low safety_buffer to make it happen quickly</span>
+vault write pki_intermediate/tidy <span class="nv">tidy_cert_store</span><span class="o">=</span><span class="nb">true </span><span class="nv">tidy_revoked_certs</span><span class="o">=</span><span class="nb">true </span><span class="nv">safety_buffer</span><span class="o">=</span><span class="s2">"1m"</span>
 
 <span class="c"># activate the automatic tidy of expired certificates or issuers</span>
 vault write pki_intermediate/config/auto-tidy <span class="nv">enabled</span><span class="o">=</span><span class="nb">true </span><span class="nv">tidy_expired_issuers</span><span class="o">=</span><span class="nb">true </span><span class="nv">tidy_revoked_cert_issuer_associations</span><span class="o">=</span><span class="nb">true </span><span class="nv">tidy_cert_store</span><span class="o">=</span><span class="nb">true </span><span class="nv">tidy_revoked_certs</span><span class="o">=</span><span class="nb">true </span><span class="nv">safety_buffer</span><span class="o">=</span>24h
+
+<span class="c"># status of tidy</span>
+vault <span class="nb">read </span>pki_intermediate/tidy-status
+</code></pre></div></div> <h2 id="vérifier-le-crl-après-la-révocation">Vérifier le CRL après la révocation</h2> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># download the chain ca (intermediate + root concatened)</span>
+<span class="c"># curl https://vault.home/v1/pki_root/ca_chain &gt; root.crt     # to have only the root</span>
+curl https://vault.home/v1/pki_intermediate/ca_chain <span class="o">&gt;</span> chain-ca.pem
+
+<span class="c"># download server certificate</span>
+vault list pki_intermediate/certs
+vault <span class="nb">read</span> <span class="nt">-field</span><span class="o">=</span>certificate pki_intermediate/cert/&lt;serial_number&gt; <span class="o">&gt;</span> toto.home.crt
+
+<span class="c"># manually update CRL</span>
+vault <span class="nb">read </span>pki_intermediate/crl/rotate
+
+<span class="c"># check CRL</span>
+curl https://vault.home/v1/pki_intermediate/crl <span class="nt">-o</span> crl.der
+openssl crl <span class="nt">-in</span> crl.der <span class="nt">-text</span>
+openssl crl <span class="nt">-inform</span> DER <span class="nt">-in</span> crl.der <span class="nt">-outform</span> PEM <span class="nt">-out</span> crl.pem
+
+openssl verify <span class="nt">-crl_check_all</span> <span class="nt">-CRLfile</span> crl.pem <span class="nt">-CAfile</span> chain-ca.pem toto.home.crt   <span class="c"># =&gt; certificate revoked</span>
 </code></pre></div></div> <h1 id="références">Références</h1> <ul> <li><a href="https://docs.tetrate.io/service-bridge/1.5.x/setup/certificate/external-ca/vault">Import external Root CA</a></li> <li><a href="https://developer.hashicorp.com/vault/tutorials/secrets-management/pki-engine">Official Vault PKI tutorial</a></li> <li><a href="https://developer.hashicorp.com/vault/api-docs/secret/pki">API docs for Vault PKI</a></li> </ul>]]></content><author><name></name></author><category term="education"/><category term="tech"/><summary type="html"><![CDATA[Comment gérer une PKI interne avec Vault]]></summary></entry></feed>
