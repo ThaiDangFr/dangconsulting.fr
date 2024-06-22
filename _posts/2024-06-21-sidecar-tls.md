@@ -1,6 +1,6 @@
 ---
 layout: post
-title: TLS sidecar container
+title: Simple TLS sidecar container
 date: 2024-06-21 12:00:00-0000
 description: Utiliser un sidecar pour gérer le TLS
 tags: tech
@@ -19,7 +19,7 @@ On utilise ici la propriété qu'au sein d'un même Pod, les container peuvent u
 Workshop sidecar TLS avec une paire de clef créée manuellement
 ==============================================================
 
-### pré-requis
+### Pré-requis
 
 ns.yaml
 ```yaml
@@ -35,7 +35,7 @@ kubectl apply -f ns.yaml
 kubectl config set-context --current --namespace=poc-sidecar-tls
 ```
 
-### container A : un serveur web sur le port 80
+### Container A : un serveur web sur le port 80
 
 docker-nginx-hello-world/Dockerfile
 ```dockerfile
@@ -59,7 +59,7 @@ docker push thaidangfr/nginx-hello-world:v1.0
 ```
 
 
-### container B : un sidecar tls sur le port 443 qui proxyfie vers le port 80 (et donc le container A)
+### Container B : un sidecar tls sur le port 443 qui proxyfie vers le port 80 (et donc le container A)
 
 docker-sidecar-nginx-tls/Dockerfile
 ```bash
@@ -114,7 +114,7 @@ docker build -t thaidangfr/nginx-sidecar-tls:v1.0 .
 docker push thaidangfr/nginx-sidecar-tls:v1.0
 ```
 
-### création de la paire de clef tls
+### Création de la paire de clef tls
 ```bash
 # create a self-signed certificate
 openssl req -x509 -newkey rsa:2048 -keyout tls.key -out tls.crt -nodes -subj '/CN=nginx-sidecar-tls-svc'
@@ -123,7 +123,7 @@ openssl req -x509 -newkey rsa:2048 -keyout tls.key -out tls.crt -nodes -subj '/C
 kubectl create secret tls tls-cert --cert=tls.crt --key=tls.key
 ```
 
-### création du pod et du service
+### Création du pod et du service
 
 deploy.yaml
 ```yaml
@@ -181,20 +181,16 @@ spec:
       targetPort: https-port
 ```
 
-installation du deployment (qui va engendrer un ReplicaSet), puis du service
+installation du Deployment (qui va engendrer un ReplicaSet), puis du Service
 ```bash
 kubectl apply -f deploy.yaml
 kubectl apply -f svc.yaml
 ```
 
-### test
+### Test
 
 on vérifie que l'on accède bien au serveur en https
 ```bash
 kubectl proxy
 curl http://localhost:8001/api/v1/namespaces/poc-sidecar-tls/services/https:poc-sidecar-tls-svc:443/proxy/
 ```
-
-Workshop sidecar TLS avec une paire de clef gérée par un agent Vault et le secret engine PKI
-============================================================================================
-
