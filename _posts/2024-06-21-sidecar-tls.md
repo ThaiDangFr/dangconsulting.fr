@@ -1,9 +1,9 @@
 ---
 layout: post
-title: Simple TLS sidecar container
+title: TLS simple sidecar container
 date: 2024-06-21 12:00:00-0000
-description: Utiliser un sidecar pour gérer le TLS
-tags: tech
+description: Utiliser un sidecar pour gérer le TLS avec des clefs existantes
+tags: tls sidecar kubernetes
 categories: education
 giscus_comments: true
 related_posts: false
