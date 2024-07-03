@@ -69,7 +69,7 @@ kubectl config set-context --current --namespace=poc-sidecar-tls-pki
 
 ## Déploiement des configmaps
 
-cm-agent-sidecar.yaml : it contains the vault agent configuration file that will keep the authentication to Vault and request the tls.crt and tls.key to Vault for the domain name foo.home
+cm-agent-sidecar.yaml : contient la configuration du vault agent qui va permettre de maintenir l'authentification à Vault et obtenir les fichiers tls.crt et tls.key pour le domaine foo.home
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -115,7 +115,7 @@ data:
 ```
 
 
-cm-app.yaml : it contains some environment variables
+cm-app.yaml : contient des variables d'environnement
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -127,7 +127,7 @@ data:
   VAULT_CACERT: "/etc/ssl/certs/vault.pem"
 ```
 
-cm-chain-ca.yaml : it contains the intermediate and root ca concatened certificates 
+cm-chain-ca.yaml : contient les certificats Intermediate CA et Root CA concaténés ensemble
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -171,7 +171,7 @@ data:
 kubectl apply -f cm-agent-sidecar.yaml,cm-app.yaml,cm-chain-ca.yaml
 ```
 
-## Création du Service Account et du JWT associé à ce service account
+## Création du Service Account et du JWT associé
 
 Un Service Account représente une identité pour un Pod. Le JWT associé au service account va contenir 2 informations qui vont permettre à Vault d'authentifier le Pod : le nom du Namespace et le nom du Service Account
 
@@ -200,7 +200,7 @@ metadata:
 kubectl apply -f secret.yaml,sa.yaml
 ```
 
-## Affectation de permissions au Service Account
+## Affectation des permissions au Service Account
 
 Pour définir des permissions pour un service account, on utilise :
 - un Role (objet "RoleBindings") pour un namespace particulier
@@ -231,9 +231,9 @@ kubectl describe clusterrolebinding.rbac.authorization.k8s.io/app-crb
 ```
 
 
-# troubleshooting
+# Troubleshooting
 
-## vérification que le cluster à les droits pour inspecter le JWT 
+## Vérification que le cluster à les droits pour inspecter le JWT 
 
 pour rappel, ces droits sont accordés dans crb.yaml
 
@@ -255,7 +255,7 @@ EOF
 kubectl apply -o yaml -f tokenreview.yaml
 ```
 
-## vérification que le JWT permet bien de s'authentifier à Vault
+## Vérification que le JWT permet bien de s'authentifier à Vault
 
 ```bash
 # JWT is in token field 
@@ -265,7 +265,7 @@ kubectl describe secret app-secret
 curl --request POST --data '{"jwt": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjZIb2M2RnVUSy12TlhqYzJ3VnE4MkVfeDFQaFNQdTlpUkR5NjdyZTlTUGMifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJwb2Mtc2lkZWNhci10bHMtcGtpIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImFwcC1zZWNyZXQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiYXBwLXNhIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiZGVjZTE0MzAtYzZkOC00NDUzLWE2YzQtNjFiYzY5MzA5ZTRlIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OnBvYy1zaWRlY2FyLXRscy1wa2k6YXBwLXNhIn0.Gil1a32Yyleibo4PyBQ2rTDnjNXs7rA10r7EhyQbirIt2wGZNz6Xbypl3akYWL-9cKaqNUrSxw9rnapRue6TXjN0lzxDSNT3ZcdwzxImNl_wdc7SuCGmYWYrgKMvgLQQlbCKMRUwDl18sImCbsAv06Bu3Kwv3jpgerTeiU3KaFZXhuTDmwUWAuPN6SooQNJW0BRkjlLTTYpHsQT28fyBbGWBj5jLqDADqOsP926_iv3HaIJ22LYABy5eaIIt4K9QizCE7Io8QF2orf_RbZuQea2xHgmVWk9MMrjhMplClq6b145asG6tpBUR7HwetrnyJTZaOKWmn2B2hbrsI9iVDw", "role": "authkube"}' https://vault.home/v1/auth/kubernetes/login
 ```
 
-## vérification que tls.key et tls.crt correspondent
+## Vérification que tls.key et tls.crt correspondent
 
 ```bash
 cd troubleshooting
@@ -279,7 +279,7 @@ openssl x509 -pubkey -in tls.crt -noout | openssl sha256
 SHA2-256(stdin)= ab1f1ed68ebd181ac3212c875fa4a107c1fc5ef81ec9301b259cfbb584df73f1
 ```
 
-## vérification des dates d'expiration des certificats directement sur les containers
+## Vérification des dates d'expiration des certificats en se connectant au container
 
 ```bash
 kubectl exec -it deployment.apps/poc-sidecar-tls-pki-deploy -c nginx -- bash
@@ -293,10 +293,10 @@ echo | openssl s_client -showcerts -servername foo.home -connect localhost:443 |
 ```
 
 
-# Resources :
-- https://www.hashicorp.com/blog/kubernetes-vault-integration-via-sidecar-agent-injector-vs-csi-provider
-- https://developer.hashicorp.com/vault/docs/agent-and-proxy/agent/template
-- https://developer.hashicorp.com/vault/tutorials/vault-agent/agent-env-vars
-- https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error
-- https://wlwan.medium.com/why-a-cluster-role-binding-is-needed-in-k8s-vault-integration-82b5aefc4d81
-- https://www.hashicorp.com/blog/certificate-management-with-vault
+# Références
+- <https://www.hashicorp.com/blog/kubernetes-vault-integration-via-sidecar-agent-injector-vs-csi-provider>
+- <https://developer.hashicorp.com/vault/docs/agent-and-proxy/agent/template>
+- <https://developer.hashicorp.com/vault/tutorials/vault-agent/agent-env-vars>
+- <https://support.hashicorp.com/hc/en-us/articles/4404389946387-Kubernetes-auth-method-Permission-Denied-error>
+- <https://wlwan.medium.com/why-a-cluster-role-binding-is-needed-in-k8s-vault-integration-82b5aefc4d81>
+- <https://www.hashicorp.com/blog/certificate-management-with-vault>
