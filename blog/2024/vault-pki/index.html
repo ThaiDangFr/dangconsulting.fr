@@ -36,7 +36,7 @@ path "pki*" {
 </code></pre></div></div> <h3 id="import-dun-root-ca-déjà-existante">Import d’un Root CA déjà existante</h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vault secrets <span class="nb">enable</span> <span class="nt">-path</span><span class="o">=</span>pki_root pki
 vault secrets tune <span class="nt">-max-lease-ttl</span><span class="o">=</span>87600h pki_root
 vault write pki_root/config/urls <span class="nv">issuing_certificates</span><span class="o">=</span><span class="s2">"https://vault.home/v1/pki_root/ca"</span> <span class="nv">crl_distribution_points</span><span class="o">=</span><span class="s2">"https://vault.home/v1/pki_root/crl"</span>
-vault write pki_root/config/crl <span class="nv">auto_rebuild</span><span class="o">=</span><span class="nb">true
+vault write pki_root/config/crl <span class="nv">auto_rebuild</span><span class="o">=</span><span class="nb">false
 
 </span>vault write <span class="nt">-format</span><span class="o">=</span>json pki_root/config/ca <span class="nv">pem_bundle</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span><span class="nb">cat</span> /mnt/secure/certificats/tls/ca.crt /mnt/secure/certificats/tls/ca.key<span class="si">)</span><span class="s2">"</span>
 vault list pki_root/issuers/
