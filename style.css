@@ -1,0 +1,121 @@
+/* style.css - Version Finale */
+:root {
+    --bg-color: #FAFAFA;
+    --text-color: #374151;
+    --accent-color: #0F172A; /* Bleu Nuit */
+    --link-color: #2563EB;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-heading: "Merriweather", "Georgia", serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    line-height: 1.7;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+}
+
+/* Force la suppression du header automatique si jamais il reste */
+header#title-block-header {
+    display: none;
+}
+
+/* 1. Le Titre Principal (H1) */
+h1 {
+    font-family: var(--font-heading);
+    color: var(--accent-color);
+    font-size: 2.5rem;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+    border: none;
+}
+
+/* 2. Le Sous-titre (Le paragraphe juste après le H1) */
+h1 + p {
+    font-family: var(--font-body);
+    color: #6B7280;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    text-align: center;
+    margin-bottom: 3rem;
+    font-weight: 400; /* On force le poids normal ici */
+}
+
+/* On gère le **gras** du markdown pour qu'il soit subtil */
+h1 + p strong {
+    font-weight: 500;
+    color: #4B5563;
+}
+
+/* Le reste du design */
+hr {
+    border: 0;
+    height: 1px;
+    background: #E5E7EB;
+    margin: 3rem auto;
+    width: 100px;
+}
+
+h3 {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    color: var(--accent-color);
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #E5E7EB;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+h4 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    color: #111827;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+ul {
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+    list-style-type: none;
+}
+
+li::before {
+    content: "—";
+    color: #9CA3AF;
+    margin-right: 0.5rem;
+    margin-left: -1.2rem;
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    border-bottom: 1px solid #D1D5DB;
+    transition: all 0.2s;
+}
+
+a:hover {
+    color: var(--link-color);
+    border-bottom-color: var(--link-color);
+}
+
+p:last-child {
+    font-size: 0.8rem;
+    color: #9CA3AF;
+    margin-top: 4rem;
+    text-align: center;
+}
